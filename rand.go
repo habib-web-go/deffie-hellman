@@ -2,8 +2,10 @@ package main
 
 import (
 	"crypto/rand"
+	"crypto/sha1"
 	"encoding/base64"
 	"encoding/binary"
+	"encoding/hex"
 	"log"
 	"math/big"
 )
@@ -60,4 +62,22 @@ func initDeffieHellman() (uint64, uint64) {
 			return p.Uint64(), g.Uint64()
 		}
 	}
+}
+
+func createDeffieHellmanSharedKey(g uint64, p uint64, a uint64, b uint64) (uint64, uint64) {
+	aBig := big.NewInt(int64(a))
+	pBig := big.NewInt(int64(p))
+	bBig := big.NewInt(int64(b))
+	gBig := big.NewInt(int64(g))
+	B := new(big.Int).Exp(gBig, bBig, pBig)
+	sharedKey := new(big.Int).Mod(pBig, new(big.Int).Exp(B, aBig, nil))
+	return B.Uint64(), sharedKey.Uint64()
+}
+
+func createSHA1(str string) string {
+	hash := sha1.New()
+	hash.Write([]byte(str))
+	hashSum := hash.Sum(nil)
+	hashString := hex.EncodeToString(hashSum)
+	return hashString
 }

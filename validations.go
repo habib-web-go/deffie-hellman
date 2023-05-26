@@ -14,11 +14,24 @@ func checkNonce(nonce string) error {
 	return nil
 }
 
-func checkClientMessageId(messageId uint) error {
+func checkClientMessageId(messageId uint64, nonce string, serverNonce string) error {
 	isValid := messageId%2 == 0
 	if !isValid {
 		return status.Errorf(codes.InvalidArgument, "MessageId must be even")
 	}
+
+	if messageId == 0 {
+		return nil
+	}
+
+	clientData, err := getClientData(nonce, serverNonce)
+	if err != nil {
+		return err
+	}
+	if clientData.CurrentMessageId >= uint64(messageId) {
+		return status.Errorf(codes.InvalidArgument, "Not valid messageId")
+	}
+
 	return nil
 }
 
@@ -27,7 +40,7 @@ func validateReqPQRequest(req *pb.ReqPQRequest) error {
 	if err != nil {
 		return err
 	}
-	err = checkClientMessageId(uint(req.GetMessageId()))
+	err = checkClientMessageId(req.GetMessageId(), req.GetNonce(), "")
 	if err != nil {
 		return err
 	}
@@ -43,7 +56,7 @@ func validateReqDHParamsRequest(req *pb.ReqDHParamsRequest) error {
 	if err != nil {
 		return err
 	}
-	err = checkClientMessageId(uint(req.GetMessageId()))
+	err = checkClientMessageId(req.GetMessageId(), req.GetNonce(), req.GetServerNonce())
 	if err != nil {
 		return err
 	}
