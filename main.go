@@ -53,8 +53,7 @@ func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*
 		return nil, err
 	}
 	A := req.GetA()
-	// b := randomUint()
-	b := uint64(15)
+	b := randomUint()
 	nonce := req.GetNonce()
 	serverNonce := req.GetServerNonce()
 	messageId := req.GetMessageId()
@@ -62,16 +61,12 @@ func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*
 	handShakeData, err := getClientHandShake(nonce, serverNonce)
 	fmt.Println(handShakeData.G, handShakeData.P)
 	B, sharedKey := createDeffieHellmanSharedKey(handShakeData.G, handShakeData.P, A, b)
-	fmt.Println(B, sharedKey)
-	fmt.Println(A, b)
-	fmt.Printf("========\n\n\n")
 	jsonData, err := json.Marshal(client{CurrentMessageId: messageId, AuthKey: sharedKey})
 	if err != nil {
 		log.Fatal("Failed to marshal struct to JSON:", err)
 		return nil, err
 	}
 	setInRedis(sharedKey, jsonData, 0)
-	log.Println(B, sharedKey)
 	return &pb.ReqDHParamsResponse{
 		Nonce:       nonce,
 		ServerNonce: serverNonce,
