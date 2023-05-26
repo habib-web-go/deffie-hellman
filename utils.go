@@ -1,12 +1,11 @@
 package main
 
 import (
-	pb "github.com/my/repo/grpc"
 	"log"
 	"net"
-	"os"
 
-	"github.com/go-redis/redis"
+	pb "github.com/my/repo/grpc"
+
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 )
@@ -16,19 +15,6 @@ func loadEnv() {
 	if err != nil {
 		log.Fatalf("Some error occured. Err: %s", err)
 	}
-}
-
-func runRedis() {
-	redisPort := os.Getenv("REDIS_PORT")
-	redisUrl := os.Getenv("REDIS_URL")
-	redisPassword := os.Getenv("REDIS_PASSWORD")
-
-	redisClient = redis.NewClient(&redis.Options{
-		Addr:     redisUrl + ":" + redisPort,
-		Password: redisPassword,
-		DB:       0,
-	})
-
 }
 
 func startServer() {
