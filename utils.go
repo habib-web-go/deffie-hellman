@@ -27,7 +27,7 @@ func startServer() {
 	s := grpc.NewServer()
 	pb.RegisterAuthServiceServer(s, &server{})
 
-	log.Println("gRPC server listening on port 50051")
+	log.Println("gRPC server listening on port 5052")
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

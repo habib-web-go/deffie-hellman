@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
-	"strconv"
 	"time"
 
 	pb "github.com/my/repo/grpc"
@@ -20,7 +20,7 @@ var (
 	redisClient *redis.Client
 )
 
-func (s *server) reqPQ(ctx context.Context, req *pb.ReqPQRequest) (*pb.ReqPQResponse, error) {
+func (s *server) ReqPQ(ctx context.Context, req *pb.ReqPQRequest) (*pb.ReqPQResponse, error) {
 	err := validateReqPQRequest(req)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,10 @@ func (s *server) reqPQ(ctx context.Context, req *pb.ReqPQRequest) (*pb.ReqPQResp
 	nonce := req.GetNonce()
 	serverNonce := randomString(20)
 	sha := createSHA1(nonce + serverNonce)
-	p, g := initDeffieHellman()
+	p, g, err := initDeffieHellman()
+	if err != nil {
+		return nil, err
+	}
 	messageId := req.GetMessageId()
 	jsonData, err := json.Marshal(clientHandShake{P: p, G: g, CurrentMessageId: messageId})
 	if err != nil {
@@ -36,7 +39,6 @@ func (s *server) reqPQ(ctx context.Context, req *pb.ReqPQRequest) (*pb.ReqPQResp
 		return nil, err
 	}
 	setInRedis(sha, jsonData, time.Minute*20)
-
 	return &pb.ReqPQResponse{
 		Nonce:       nonce,
 		ServerNonce: serverNonce,
@@ -50,20 +52,26 @@ func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	a := req.GetA()
-	b := randomUint()
+	A := req.GetA()
+	// b := randomUint()
+	b := uint64(15)
 	nonce := req.GetNonce()
 	serverNonce := req.GetServerNonce()
 	messageId := req.GetMessageId()
 
 	handShakeData, err := getClientHandShake(nonce, serverNonce)
-	B, sharedKey := createDeffieHellmanSharedKey(handShakeData.G, handShakeData.P, a, b)
+	fmt.Println(handShakeData.G, handShakeData.P)
+	B, sharedKey := createDeffieHellmanSharedKey(handShakeData.G, handShakeData.P, A, b)
+	fmt.Println(B, sharedKey)
+	fmt.Println(A, b)
+	fmt.Printf("========\n\n\n")
 	jsonData, err := json.Marshal(client{CurrentMessageId: messageId, AuthKey: sharedKey})
 	if err != nil {
 		log.Fatal("Failed to marshal struct to JSON:", err)
 		return nil, err
 	}
-	setInRedis(strconv.Itoa(int(sharedKey)), jsonData, 0)
+	setInRedis(sharedKey, jsonData, 0)
+	log.Println(B, sharedKey)
 	return &pb.ReqDHParamsResponse{
 		Nonce:       nonce,
 		ServerNonce: serverNonce,

@@ -6,8 +6,11 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"math/big"
+	"os"
+	"strconv"
 )
 
 func randomString(length int) string {
@@ -31,47 +34,52 @@ func randomUint() uint64 {
 	}
 }
 
-func generatePrime(bits int) (*big.Int, error) {
-	prime, err := rand.Prime(rand.Reader, bits)
+func initDeffieHellman() (string, uint64, error) {
+	groupId, err := strconv.Atoi(os.Getenv("DH_GROUP_ID"))
 	if err != nil {
-		return nil, err
+
+		return "", 0, err
 	}
-	return prime, nil
+	p, g, err := getGroupParams(groupId)
+	if err != nil {
+		return "", 0, err
+	}
+	return p.String(), g.Uint64(), nil
 }
 
-func generateGenerator(p *big.Int) *big.Int {
-	two := big.NewInt(2)
-	for g := big.NewInt(2); g.Cmp(p) < 0; g.Add(g, big.NewInt(1)) {
-		exp := new(big.Int).Sub(p, big.NewInt(1))
-		exp.Div(exp, two)
-		remainder := new(big.Int).Exp(g, exp, p)
-		if remainder.Cmp(big.NewInt(1)) != 0 {
-			return g
-		}
-	}
-	return nil
-}
-func initDeffieHellman() (uint64, uint64) {
-	for {
-		p, err := generatePrime(256)
-		if err != nil || !p.IsUint64() {
-			continue
-		}
-		g := generateGenerator(p)
-		if g != nil && g.IsUint64() {
-			return p.Uint64(), g.Uint64()
-		}
-	}
-}
-
-func createDeffieHellmanSharedKey(g uint64, p uint64, a uint64, b uint64) (uint64, uint64) {
-	aBig := big.NewInt(int64(a))
-	pBig := big.NewInt(int64(p))
+func createDeffieHellmanSharedKey(g uint64, p string, A string, b uint64) (string, string) {
+	ABig, _ := new(big.Int).SetString(A, 10)
+	pBig, _ := new(big.Int).SetString(p, 10)
 	bBig := big.NewInt(int64(b))
 	gBig := big.NewInt(int64(g))
 	B := new(big.Int).Exp(gBig, bBig, pBig)
-	sharedKey := new(big.Int).Mod(pBig, new(big.Int).Exp(B, aBig, nil))
-	return B.Uint64(), sharedKey.Uint64()
+	sharedKey := new(big.Int).Exp(ABig, bBig, pBig)
+	return B.String(), sharedKey.String()
+}
+
+func getGroupParams(groupID int) (*big.Int, *big.Int, error) {
+	switch groupID {
+	case 14:
+		return getGroup14Params()
+	case 0:
+		return big.NewInt(23), big.NewInt(5), nil
+	default:
+		return nil, nil, fmt.Errorf("Unsupported group ID")
+	}
+}
+
+func getGroup14Params() (*big.Int, *big.Int, error) {
+	p, success := new(big.Int).SetString(
+		"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74"+
+			"020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F1437"+
+			"4FE1356D6D51C245E485B576625E7EC6F44C42E9A63A3620FFFFFFFFFFFFFFFF", 16)
+	if !success {
+		return nil, nil, fmt.Errorf("Failed to parse prime number (p)")
+	}
+
+	g := big.NewInt(2)
+
+	return p, g, nil
 }
 
 func createSHA1(str string) string {

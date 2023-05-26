@@ -24,13 +24,14 @@ func checkClientMessageId(messageId uint64, nonce string, serverNonce string) er
 		return nil
 	}
 
-	clientData, err := getClientData(nonce, serverNonce)
-	if err != nil {
-		return err
-	}
-	if clientData.CurrentMessageId >= uint64(messageId) {
-		return status.Errorf(codes.InvalidArgument, "Not valid messageId")
-	}
+	// todo if is in getting auth key check message id with nonce or check authkey?!
+	// clientData, err := getClientHandShake(nonce, serverNonce)
+	// if err != nil {
+	// 	return err
+	// }
+	// if clientData.CurrentMessageId >= uint64(messageId) {
+	// 	return status.Errorf(codes.InvalidArgument, "Not valid messageId")
+	// }
 
 	return nil
 }
