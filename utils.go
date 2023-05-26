@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "grpc/auth/deffieHellman"
+	pb "github.com/my/repo/grpc"
 	"log"
 	"net"
 	"os"
@@ -39,7 +39,7 @@ func startServer() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterAuthService(s, &server{})
+	pb.RegisterAuthServiceServer(s, &server{})
 
 	log.Println("gRPC server listening on port 50051")
 

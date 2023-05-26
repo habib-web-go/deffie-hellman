@@ -7,3 +7,7 @@ brew install protobuf
 ```sh
 apt install -y protobuf-compiler
 ```
+## Compile Proto
+```
+protoc --go_out=. --go-grpc_out=. grpc/authpb.proto
+```

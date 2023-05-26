@@ -1,14 +1,14 @@
 syntax = "proto3";
 
 package authDH;
-option go_package = "grpc/auth/deffieHellman";
+option go_package = "grpc/";
 
 message ReqPQRequest {
   string nonce = 1;
   int64 messageId = 2;
 }
 
-message ReqPQResponce {
+message ReqPQResponse {
   string nonce = 1;
   string serverNonce = 2;
   int64 messageId = 3;
@@ -30,6 +30,6 @@ message reqDHParamsResponse {
   int64 b = 4;
 }
 service AuthService {
-  rpc reqPQ(ReqPQRequest) returns (ReqPQResponce);
+  rpc reqPQ(ReqPQRequest) returns (ReqPQResponse);
   rpc reqDHParams(reqDHParamsRequest) returns (reqDHParamsResponse);
 }

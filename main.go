@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	pb "grpc/auth/deffieHellman"
+	pb "github.com/my/repo/grpc"
 
 	"github.com/go-redis/redis"
 )
