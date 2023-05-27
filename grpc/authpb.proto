@@ -29,6 +29,7 @@ message reqDHParamsResponse {
   uint64 messageId = 3;
   string b = 4;
 }
+
 service AuthService {
   rpc reqPQ(ReqPQRequest) returns (ReqPQResponse);
   rpc reqDHParams(reqDHParamsRequest) returns (reqDHParamsResponse);
