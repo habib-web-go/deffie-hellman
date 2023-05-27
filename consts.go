@@ -1,5 +1,5 @@
 package main
 
 const (
-	NONCE_LENGTH = 20
+	NonceLength = 20
 )

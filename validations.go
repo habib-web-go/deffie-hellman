@@ -7,9 +7,9 @@ import (
 )
 
 func checkNonce(nonce string) error {
-	isValid := len(nonce) == NONCE_LENGTH
+	isValid := len(nonce) == NonceLength
 	if !isValid {
-		return status.Errorf(codes.InvalidArgument, "Nonce length must be %d", NONCE_LENGTH)
+		return status.Errorf(codes.InvalidArgument, "Nonce length must be %d", NonceLength)
 	}
 	return nil
 }
