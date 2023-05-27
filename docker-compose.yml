@@ -4,7 +4,7 @@ services:
   redis:
     image: redis:${REDIS_IMAGE_TAG}
     volumes:
-      - redis-data:/data
+      - deffie_hellman_data:/data
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     ports:
