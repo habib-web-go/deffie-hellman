@@ -21,7 +21,7 @@ services:
     depends_on:
       - redis
     ports:
-      - "5052:5052"
+      - "${SERVER_PORT}:${SERVER_PORT}"
     restart: always
 
 volumes:
