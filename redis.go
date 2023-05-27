@@ -27,40 +27,49 @@ func setInRedis(key string, data []byte, expiration time.Duration) error {
 	if err != nil {
 		return err
 	}
+
 	return err
 }
 
 func getFromRedis(key string) ([]byte, error) {
 	result, err := redisClient.Get(key).Result()
+
 	if err != nil {
 		return nil, err
 	}
+
 	return []byte(result), nil
 }
 
 func getClientHandShake(nonce string, serverNonce string) (*clientHandShake, error) {
 	var handShakeData clientHandShake
+
 	sha := createSHA1(nonce + serverNonce)
 	data, err := getFromRedis(sha)
 	if err != nil {
 		return nil, err
 	}
+
 	err = json.Unmarshal([]byte(data), &handShakeData)
 	if err != nil {
 		return nil, err
 	}
+
 	return &handShakeData, nil
 }
 
 func getClientData(authKey int) (*client, error) {
 	var clientData client
+
 	data, err := getFromRedis(strconv.Itoa(int(authKey)))
 	if err != nil {
 		return nil, err
 	}
+
 	err = json.Unmarshal([]byte(data), &clientData)
 	if err != nil {
 		return nil, err
 	}
+
 	return &clientData, nil
 }
