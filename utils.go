@@ -4,7 +4,6 @@ import (
 	"log"
 	"math/rand"
 	"net"
-	"testing"
 	"time"
 
 	pb "github.com/my/repo/grpc"
@@ -17,20 +16,6 @@ func loadEnv() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Some error occured. Err: %s", err)
-	}
-}
-
-func AssertErrorMessagesEqual(
-	t testing.TB,
-	expected error,
-	actual error,
-) {
-	if (expected == nil && actual != nil) || (expected != nil && actual == nil) {
-		t.Errorf("Expected error message %v but got %v", expected, actual)
-	} else if expected != nil && actual != nil {
-		if expected.Error() != actual.Error() {
-			t.Errorf("Expected error message '%s' but got '%s'", expected.Error(), actual.Error())
-		}
 	}
 }
 
