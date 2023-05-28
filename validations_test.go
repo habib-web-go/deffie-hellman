@@ -14,7 +14,7 @@ func TestCheckNonce(t *testing.T) {
 	}{
 		{
 			name:  "valid nonce",
-			nonce: RandomString(NonceLength),
+			nonce: randomString(NonceLength),
 			err:   nil,
 		},
 		{

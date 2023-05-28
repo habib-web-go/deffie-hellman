@@ -19,7 +19,6 @@ func runRedis() {
 		Password: redisPassword,
 		DB:       0,
 	})
-
 }
 
 func setInRedis(key string, data []byte, expiration time.Duration) error {
@@ -28,7 +27,7 @@ func setInRedis(key string, data []byte, expiration time.Duration) error {
 		return err
 	}
 
-	return err
+	return nil
 }
 
 func getFromRedis(key string) ([]byte, error) {
