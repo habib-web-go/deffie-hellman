@@ -48,6 +48,10 @@ func (s *server) ReqPQ(ctx context.Context, req *pb.ReqPQRequest) (*pb.ReqPQResp
 	}
 
 	err = setInRedis(sha, jsonData, time.Minute*20)
+	if err != nil {
+		log.Fatal("Failed to set in redis:", err)
+		return nil, err
+	}
 
 	return &pb.ReqPQResponse{
 		Nonce:       nonce,
@@ -79,7 +83,12 @@ func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*
 		return nil, err
 	}
 
-	setInRedis(sharedKey, jsonData, 0)
+	err = setInRedis(sharedKey, jsonData, 0)
+	if err != nil {
+		log.Fatal("Failed to set in redis:", err)
+		return nil, err
+	}
+
 	return &pb.ReqDHParamsResponse{
 		Nonce:       nonce,
 		ServerNonce: serverNonce,
