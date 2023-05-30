@@ -7,10 +7,12 @@ services:
       - deffie_hellman_data:/data
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-    ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
+    expose:
+      - ${REDIS_PORT}
     command: redis-server --requirepass ${REDIS_PASSWORD}
     restart: always
+    networks:
+      - default
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
@@ -23,9 +25,13 @@ services:
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     restart: always
+    networks:
+      - default
+      - deffie_hellman_network
 
 volumes:
   deffie_hellman_data:
 networks:
+  default:
   deffie_hellman_network:
     name: deffie_hellman_network
