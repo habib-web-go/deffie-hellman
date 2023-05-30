@@ -31,7 +31,7 @@ services:
 
 volumes:
   deffie_hellman_data:
+    name: deffie_hellman_data
 networks:
-  default:
   deffie_hellman_network:
     name: deffie_hellman_network
