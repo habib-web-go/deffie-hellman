@@ -23,26 +23,41 @@ func (s *server) ReqPQ(ctx context.Context, req *pb.ReqPQRequest) (*pb.ReqPQResp
 	if err != nil {
 		return nil, err
 	}
+
 	nonce := req.GetNonce()
-	serverNonce := randomString(20)
+	serverNonce := randomString(NonceLength)
 	sha := createSHA1(nonce + serverNonce)
 	p, g, err := initDeffieHellman()
 	if err != nil {
 		return nil, err
 	}
+
 	messageId := req.GetMessageId()
-	jsonData, err := json.Marshal(clientHandShake{P: p, G: g, CurrentMessageId: messageId})
+	jsonData, err := json.Marshal(
+		clientHandShake{
+			P:                p,
+			G:                g,
+			CurrentMessageId: messageId,
+		},
+	)
 	if err != nil {
 		log.Fatal("Failed to marshal struct to JSON:", err)
 		return nil, err
 	}
-	setInRedis(sha, jsonData, ExpirationDuration)
+
+	err = setInRedis(sha, jsonData, time.Minute*20)
+	if err != nil {
+		log.Fatal("Failed to set in redis:", err)
+		return nil, err
+	}
+
 	return &pb.ReqPQResponse{
 		Nonce:       nonce,
 		ServerNonce: serverNonce,
 		P:           p,
 		G:           g,
-		MessageId:   messageId + 1}, nil
+		MessageId:   messageId + 1,
+	}, nil
 }
 
 func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*pb.ReqDHParamsResponse, error) {
@@ -50,6 +65,7 @@ func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*
 	if err != nil {
 		return nil, err
 	}
+
 	A := req.GetA()
 	b := randomUint()
 	nonce := req.GetNonce()
@@ -63,12 +79,19 @@ func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*
 		log.Fatal("Failed to marshal struct to JSON:", err)
 		return nil, err
 	}
-	setInRedis(sharedKey, jsonData, ExpirationDuration)
+
+	err = setInRedis(sharedKey, jsonData, 0)
+	if err != nil {
+		log.Fatal("Failed to set in redis:", err)
+		return nil, err
+	}
+
 	return &pb.ReqDHParamsResponse{
 		Nonce:       nonce,
 		ServerNonce: serverNonce,
 		MessageId:   messageId + 1,
-		B:           B}, nil
+		B:           B,
+	}, nil
 }
 
 func (s *server) IsValidAuthkey(ctx context.Context, req *pb.IsValidAuthKeyRequest) (*pb.IsValidAuthKeyResponse, error) {

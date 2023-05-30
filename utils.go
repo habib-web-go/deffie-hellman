@@ -1,10 +1,9 @@
 package main
 
 import (
+	pb "github.com/my/repo/grpc"
 	"log"
 	"net"
-
-	pb "github.com/my/repo/grpc"
 
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
