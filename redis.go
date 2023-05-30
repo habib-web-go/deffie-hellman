@@ -9,6 +9,10 @@ import (
 	"github.com/go-redis/redis"
 )
 
+const (
+	ExpirationDuration = time.Minute * 20
+)
+
 func runRedis() {
 	redisPort := os.Getenv("REDIS_PORT")
 	redisUrl := os.Getenv("REDIS_URL")
@@ -29,6 +33,14 @@ func setInRedis(key string, data []byte, expiration time.Duration) error {
 	}
 
 	return err
+}
+
+func existInRedis(key string) (bool, error) {
+	count, err := redisClient.Exists(key).Result()
+	if err != nil {
+		return false, err
+	}
+	return count == 1, nil
 }
 
 func getFromRedis(key string) ([]byte, error) {

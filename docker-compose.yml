@@ -19,7 +19,8 @@ services:
   server:
     build: .
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     restart: always
@@ -28,3 +29,4 @@ volumes:
   deffie_hellman_data:
 networks:
   deffie_hellman_network:
+    name: deffie_hellman_network
