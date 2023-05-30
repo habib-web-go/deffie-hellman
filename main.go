@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
-	"time"
 
 	pb "github.com/my/repo/grpc"
 
@@ -75,7 +73,6 @@ func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*
 	messageId := req.GetMessageId()
 
 	handShakeData, err := getClientHandShake(nonce, serverNonce)
-	fmt.Println(handShakeData.G, handShakeData.P)
 	B, sharedKey := createDeffieHellmanSharedKey(handShakeData.G, handShakeData.P, A, b)
 	jsonData, err := json.Marshal(client{CurrentMessageId: messageId, AuthKey: sharedKey})
 	if err != nil {
@@ -95,6 +92,15 @@ func (s *server) ReqDHParams(ctx context.Context, req *pb.ReqDHParamsRequest) (*
 		MessageId:   messageId + 1,
 		B:           B,
 	}, nil
+}
+
+func (s *server) IsValidAuthkey(ctx context.Context, req *pb.IsValidAuthKeyRequest) (*pb.IsValidAuthKeyResponse, error) {
+	isValid, err := existInRedis(req.GetAuthkey())
+	if err != nil {
+		log.Fatal("Failed to connect to redis:", err)
+		return nil, err
+	}
+	return &pb.IsValidAuthKeyResponse{IsValid: isValid}, nil
 }
 
 func main() {
