@@ -15,8 +15,7 @@ services:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       retries: 5
-
-  server:
+  auth:
     build: .
     depends_on:
       redis:
