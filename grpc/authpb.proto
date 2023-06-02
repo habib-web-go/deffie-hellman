@@ -1,7 +1,8 @@
 syntax = "proto3";
 package authDH;
-option go_package = "grpc/";
+option go_package = "./grpc";
 
+import "google/api/annotations.proto";
 
 message ReqPQRequest {
   string nonce = 1;
@@ -39,7 +40,21 @@ message IsValidAuthKeyResponse {
 }
 
 service AuthService {
-  rpc reqPQ(ReqPQRequest) returns (ReqPQResponse);
-  rpc reqDHParams(reqDHParamsRequest) returns (reqDHParamsResponse);
-  rpc isValidAuthkey(IsValidAuthKeyRequest) returns (IsValidAuthKeyResponse);
+  rpc reqPQ(ReqPQRequest) returns (ReqPQResponse) {
+    option (google.api.http) = {
+      post: "/auth/pq"
+      body: "*"
+    };
+  }
+  rpc reqDHParams(reqDHParamsRequest) returns (reqDHParamsResponse) {
+    option (google.api.http) = {
+      post: "/auth/dh"
+      body: "*"
+    };
+  }
+  rpc isValidAuthkey(IsValidAuthKeyRequest) returns (IsValidAuthKeyResponse) {
+    option (google.api.http) = {
+      get: "/auth/is_valid_authkey/{authkey}"
+    };
+  }
 }

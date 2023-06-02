@@ -1,0 +1,222 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "grpc/authpb.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auth/dh": {
+      "post": {
+        "operationId": "AuthService_reqDHParams",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authDHreqDHParamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authDHreqDHParamsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/auth/is_valid_authkey/{authkey}": {
+      "get": {
+        "operationId": "AuthService_isValidAuthkey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authDHIsValidAuthKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "authkey",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/auth/pq": {
+      "post": {
+        "operationId": "AuthService_reqPQ",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authDHReqPQResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authDHReqPQRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "authDHIsValidAuthKeyResponse": {
+      "type": "object",
+      "properties": {
+        "isValid": {
+          "type": "boolean"
+        }
+      }
+    },
+    "authDHReqPQRequest": {
+      "type": "object",
+      "properties": {
+        "nonce": {
+          "type": "string"
+        },
+        "messageId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "authDHReqPQResponse": {
+      "type": "object",
+      "properties": {
+        "nonce": {
+          "type": "string"
+        },
+        "serverNonce": {
+          "type": "string"
+        },
+        "messageId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "p": {
+          "type": "string"
+        },
+        "g": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "authDHreqDHParamsRequest": {
+      "type": "object",
+      "properties": {
+        "nonce": {
+          "type": "string"
+        },
+        "serverNonce": {
+          "type": "string"
+        },
+        "messageId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "a": {
+          "type": "string"
+        }
+      }
+    },
+    "authDHreqDHParamsResponse": {
+      "type": "object",
+      "properties": {
+        "nonce": {
+          "type": "string"
+        },
+        "serverNonce": {
+          "type": "string"
+        },
+        "messageId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "b": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

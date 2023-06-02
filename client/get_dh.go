@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"time"
 
-	pb "github.com/my/repo/grpc"
+	pb "github.com/my/repo/gen/grpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

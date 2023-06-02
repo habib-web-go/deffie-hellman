@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "github.com/my/repo/grpc"
+	pb "github.com/my/repo/gen/grpc"
 	"log"
 	"net"
 
