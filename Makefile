@@ -11,7 +11,7 @@ generate-proto:
   grpc/authpb.proto
 
 generate-swagger-json:
-	protoc -I=. --go_out=. --go-grpc_out=. --swagger_out=logtostderr=true:. grpc/authpb.proto
+	protoc -I=. --swagger_out=logtostderr=true:. grpc/authpb.proto
 
 generate-swagger-server:
 	docker pull quay.io/goswagger/swagger
