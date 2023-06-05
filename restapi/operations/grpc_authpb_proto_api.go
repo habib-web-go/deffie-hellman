@@ -19,7 +19,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/my/repo/restapi/operations/auth_service"
+	"github.com/habib-web-go/diffie-hellman/restapi/operations/auth_service"
 )
 
 // NewGrpcAuthpbProtoAPI creates a new GrpcAuthpbProto instance

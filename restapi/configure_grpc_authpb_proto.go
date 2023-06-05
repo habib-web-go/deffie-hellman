@@ -10,8 +10,8 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/my/repo/restapi/operations"
-	"github.com/my/repo/restapi/operations/auth_service"
+	"github.com/habib-web-go/diffie-hellman/restapi/operations"
+	"github.com/habib-web-go/diffie-hellman/restapi/operations/auth_service"
 )
 
 //go:generate swagger generate server --target ../../deffie-hellman --name GrpcAuthpbProto --spec ../authpb.swagger.json --principal interface{}

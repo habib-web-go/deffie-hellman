@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/my/repo/models"
+	"github.com/habib-web-go/diffie-hellman/models"
 )
 
 // AuthServiceReqPQOKCode is the HTTP code returned for type AuthServiceReqPQOK

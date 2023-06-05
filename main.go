@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/my/repo/gen/grpc"
+	pb "github.com/habib-web-go/diffie-hellman/gen/grpc"
 
 	"github.com/go-redis/redis"
 )

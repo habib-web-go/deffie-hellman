@@ -1,4 +1,4 @@
-module github.com/my/repo
+module github.com/habib-web-go/diffie-hellman
 
 go 1.20
 

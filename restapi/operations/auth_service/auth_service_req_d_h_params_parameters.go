@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/validate"
 
-	"github.com/my/repo/models"
+	"github.com/habib-web-go/diffie-hellman/models"
 )
 
 // NewAuthServiceReqDHParamsParams creates a new AuthServiceReqDHParamsParams object
